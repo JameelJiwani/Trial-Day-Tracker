@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
@@ -34,7 +35,7 @@ public class AddMemberController implements Initializable {
         try {
             stageTheLabelBelongs.setScene(new Scene(FXMLLoader.load(getClass().getResource("Landing Page.fxml")), 1000, 500));
         } catch(IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -45,6 +46,7 @@ public class AddMemberController implements Initializable {
             submitMembertoDB(newMember);
             notification.setVisible(true);
         } catch (SQLException e) {
+            createDB();
             e.printStackTrace();
         }
         fname.clear();
@@ -67,6 +69,21 @@ public class AddMemberController implements Initializable {
         stmnt.executeUpdate();
 
         conn.close();
+
+    }
+
+    private void createDB() {
+        try {
+            Connection conn = DriverManager.getConnection(passkey.getDatabase(), passkey.getUsername(), passkey.getPassword());
+            Statement stmt = conn.createStatement();
+            String query = "CREATE TABLE members(member_id INT PRIMARY KEY AUTO_INCREMENT, first_name VARCHAR(255), last_name VARCHAR(255), date_entered DATE, phone_number VARCHAR(15), comment CLOB)";
+
+            stmt.execute(query);
+
+            conn.close();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 }

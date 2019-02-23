@@ -27,7 +27,7 @@ public class SearchDBController implements Initializable {
 
         try (
                 Connection conn = DriverManager.getConnection(passkey.getDatabase(), passkey.getUsername(), passkey.getPassword());
-                Statement stmt = conn.createStatement();
+                Statement stmt = conn.createStatement()
         ) {
             String query = "SELECT first_name, last_name, date_entered, phone_number, comment, date_entered FROM members";
 
@@ -37,6 +37,8 @@ public class SearchDBController implements Initializable {
             while (rset.next()) {
                 memberList.getItems().add(new Member(rset.getString("first_name"), rset.getString("last_name"), rset.getString("comment"), rset.getDate("date_entered"), rset.getString("phone_number")));
             }
+
+            conn.close();
 
 
         } catch (SQLException e) {
@@ -49,7 +51,7 @@ public class SearchDBController implements Initializable {
         try {
             stageTheLabelBelongs.setScene(new Scene(FXMLLoader.load(getClass().getResource("Landing Page.fxml")), 1000, 500));
         } catch(IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +74,7 @@ public class SearchDBController implements Initializable {
 
         try (
                 Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "root", "therootofallevil");
-                Statement stmt = conn.createStatement();
+                Statement stmt = conn.createStatement()
         ){
             String query = "SELECT * FROM members WHERE first_name LIKE '%" + keyword.getText() + "%' or last_name LIKE '%" + keyword.getText() + "%' or phone_number LIKE '%" + keyword.getText() +  "%'";
 
@@ -81,6 +83,8 @@ public class SearchDBController implements Initializable {
             while(rset.next()) {
                 memberList.getItems().add(new Member(rset.getString("first_name"), rset.getString("last_name"), rset.getString("comment"), rset.getDate("date_entered"), rset.getString("phone_number")));
             }
+
+            conn.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
